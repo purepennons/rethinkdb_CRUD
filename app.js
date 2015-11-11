@@ -15,6 +15,11 @@ async function setup() {
     // create table authors
     // let result = await r.db('test').tableCreate('authors').run(conn);
     // console.log(result);
+
+    // changefeeds
+    let cursor = await r.table('authors').filter({author: 'qnap'}).changes().run(conn);
+    cursor.each(console.log);
+
     // start web server
     app.listen(3000);
   } catch(err) {
@@ -80,7 +85,6 @@ app.use(function* (next) {
     return yield next;
   }
 });
-
 
 // run
 setup()
