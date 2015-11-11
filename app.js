@@ -53,6 +53,20 @@ app.use(function* (next) {
   }
 });
 
+// update a record from authors table by author
+app.use(function* (next) {
+  if(this.path !== '/authors/update' || this.method !== 'PUT') return yield next;
+  try {
+    let body = yield parse(this, {limit: '1kb'});
+    let result = yield r.table('authors').filter({author: body.author}).update({author: body.author, tag: body.tag}).run(conn);
+    this.body = result;
+  } catch(err) {
+    console.error(err.stack);
+    this.response.status = 500;
+    return yield next;
+  }
+});
+
 // delete a record from authors table by author
 app.use(function* (next) {
   if(this.path !== '/authors/delete' || this.method !== 'DELETE') return yield next;
